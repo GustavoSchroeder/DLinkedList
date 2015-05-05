@@ -1,0 +1,144 @@
+package dlinkedlist;
+
+/**
+ *
+ * @author gschroeder
+ * @param <E>
+ */
+public class DLinkedList<E> {
+
+    protected int numElements; //numero de elementos
+    protected DNode<E> head; //cabeca da lista
+    protected DNode<E> tail; // rabo da lista
+
+    public DLinkedList() {
+        numElements = 0;
+        head = tail = null;
+    }
+
+    public boolean isEmpty() {
+        if (numElements == 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public E getFirst() throws UnderflowException {
+        if (isEmpty()) {
+            throw new UnderflowException();
+        }
+        return head.getElement();
+    }
+
+    public E getLast() throws UnderflowException {
+        if (isEmpty()) {
+            throw new UnderflowException();
+        }
+        return tail.getElement();
+    }
+
+    public void insertFirst(E element) {
+        DNode<E> nodo = new DNode<E>(element);
+        if (isEmpty()) {
+            head = tail = nodo;
+        } else {
+            head.setPrevious(nodo);
+            nodo.setNext(head);
+            head = nodo;
+            numElements++;
+        }
+    }
+
+    public void insertLast(E element) {
+        DNode<E> nodo = new DNode<E>(element);
+        if (isEmpty()) {
+            head = tail = nodo;
+        } else {
+            tail.setNext(nodo);
+            nodo.setPrevious(tail);
+            tail = nodo;
+            numElements++;
+        }
+    }
+    
+    public void insertAnyPos(E element, int pos){
+        
+        if(head == null){
+            insertFirst(element);
+        }
+        else{
+            DNode<E> anterior = getNode(pos - 1);
+            DNode<E> proxima = getNode(pos + 1);
+            DNode<E> novoNode = new DNode<E>(element);
+            novoNode.setNext(proxima);
+            novoNode.setPrevious(anterior);
+            anterior.setNext(novoNode);
+            proxima.setPrevious(novoNode);
+            numElements++;
+        }
+    }
+
+    public E removeFirst() throws UnderflowException {
+        E element = head.getElement();
+        if (isEmpty()) {
+            throw new UnderflowException();
+        } else if (head == tail) {
+            head = tail = null;
+        }
+
+        head = head.getNext();
+        head.setPrevious(null);
+        numElements--;
+        return element;
+    }
+
+    public E removeLast() throws UnderflowException {
+        E element = tail.getElement();
+        if (isEmpty()) {
+            throw new UnderflowException();
+        } else if (head == tail) {
+            head = tail = null;
+        }
+
+        tail = tail.getPrevious();
+        tail.setNext(null);
+        numElements--;
+        return element;
+    }
+    
+    public E removeAnyPos(int pos) throws UnderflowException{
+        E elementRemoved = getNode(pos).getElement();
+        if(isEmpty()){
+            throw new UnderflowException();
+        }
+        else if(head == tail){
+            head = tail = null;
+        }
+        else{
+            DNode<E> anterior = getNode(pos - 1);
+            DNode<E> proximo = getNode(pos + 1);
+            anterior.setNext(proximo);
+            proximo.setPrevious(anterior);
+        }
+        numElements--;
+        return elementRemoved;
+    }
+
+    public String toString() {
+        String str = "\nExibindo a lista: ";
+        DNode<E> current = head;
+        while (current != null) {
+            str += current.getElement() + " - ";
+            current = current.getNext();
+        }
+        return str;
+    }
+    public DNode<E> getNode(int pos){
+        DNode<E> current = head;
+        for (int i = 0; i < pos; i++) {
+            current.getNext();
+        }
+        return current;
+    }
+
+}
